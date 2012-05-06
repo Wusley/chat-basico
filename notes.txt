@@ -1,0 +1,4 @@
+
+	Código de conexão e manipulação de eventos deve ser ofuscado
+	http://javascriptobfuscator.com/
+	http://code.google.com/intl/pt-BR/closure/compiler/

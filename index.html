@@ -1,0 +1,68 @@
+<html>
+	<head>
+		<title>Chat</title>
+		
+		<!-- recebendo arquivo do servidor para trabalhar com socket -->
+		<script src="/socket.io/socket.io.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+		<script>
+			$(document).ready(function(){
+				
+				//receber conexao com socket
+				var chat = io.connect();
+				
+				//fazendo conexão com socket do servidor
+				chat.on('connect',function() {
+					
+					//setando o nick
+					chat.emit('set nick', prompt("Apelido: ","Convidado"));
+					
+				});
+				
+				//avisando para todos conectados sobre quem conectou
+				chat.on('conectou',function(nick, sid){
+					
+					$("#eventos").append(nick + ' conectou <br />');
+					chat.emit('boas vindas', sid);
+										
+				});
+				
+				//recebendo boas vindas do servidor
+				chat.on('boas vindas', function(nick) {
+					
+					$("#eventos").append(nick + " deseja boas vindas!<br />");
+					
+				});
+				
+				//carregar todas as mensagens
+				chat.on('mensagem', function(mensagem){
+					
+					$("#msg").append("[" + mensagem.hora + "] : " + mensagem.nick + " : " + mensagem.texto + "<br />");
+					window.scrollTo(0, document.body.scrollHeight);
+					
+				});
+				
+				$("#enviar").click(function(){
+					
+					chat.emit('enviar mensagem', $("#mensagem").val());
+					$("#mensagem").val("");
+					
+				});
+				
+				
+			});			
+		</script>
+	</head>
+	
+	<body>
+		
+		<div id="msg"></div>
+		
+		<input type="text" id="mensagem" name="mensagem"  />
+		<input type="button" id="enviar" name="" value="Enviar" />
+		
+		<div id="eventos"></div>
+		
+	</body>
+	
+</html>
